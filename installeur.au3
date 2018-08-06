@@ -79,7 +79,7 @@ $btn_migration = GUICtrlCreateButton("Migration/upgrade", 8, 464, 99, 25)
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
-Global $fichierLog = @HomeDrive & "\trilog\logs\" & tempo() & "_Installeur_log.log" ; Création du nom du log
+Global $fichierLog = @HomeDrive & "\trilog\logs\Installeur_log.log" ; Création du nom du log
 
 #Region Declaration des fonctions
 
@@ -104,20 +104,15 @@ Func etat() ; Vérifier existance d'un dossier
 	existe(@HomeDrive & "\Program Files (x86)\santesocial\srvsvcnam\SRVSVCNAM.exe",$lb_srvsvcnam,$chk_srvsvcnam)
 EndFunc
 
-Func tempo ()
-   $temp = @YEAR&@MON&@MDAY&"_"&@HOUR&"_"&@MIN
-   Return $temp
-EndFunc
-
 Func trace($txt)
    _FileWriteLog($fichierLog,$txt)
 EndFunc
 
 Func test($val,$msg)
    if $val = 0 Then
-	  _FileWriteLog($fichierLog,"ERREUR : "& $msg)
+	  _FileWriteLog($fichierLog, "ERREUR : "& $msg)
    else
-	  _FileWriteLog($fichierLog,"reussi : "& $msg)
+	  _FileWriteLog($fichierLog, "reussi : "& $msg)
    EndIf
 EndFunc
 
