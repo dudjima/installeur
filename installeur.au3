@@ -239,13 +239,6 @@ While 1
 
 
 		Case $btn_migration
-		IniWrite($dossier_pyxvital & "pyxvital.ini","Paramètres","Teste_version_TLA","N")
-		IniWrite($dossier_pyxvital & "pyxvital.ini","Paramètres","Cache","N")
-		IniWriteSection($dossier_pyxvital & "pyxvital.ini","Fenêtre","ARL","H")
-		IniWriteSection($dossier_pyxvital & "pyxvital.ini","Fenêtre","RSP","H")
-
-		IniWriteSection($dossier_pyxvital & "pyxvital.ini","SRT","outrepasse","CC8")
-
 		; Installation en réseau partie cliente
 		If GUICtrlRead($rd_rc) = $GUI_CHECKED Then
 			; On modifie le fichier pyxvital.ini
