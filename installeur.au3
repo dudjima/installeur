@@ -4,7 +4,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
-#AutoIt3Wrapper_Res_Fileversion=1.0.0.33
+#AutoIt3Wrapper_Res_Fileversion=1.0.0.37
 #AutoIt3Wrapper_Res_Fileversion_AutoIncrement=y
 #AutoIt3Wrapper_Res_Language=1036
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
@@ -82,7 +82,7 @@ $btn_migration = GUICtrlCreateButton("Migration/upgrade", 8, 464, 99, 25)
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
-Global $fichier_log = $dossier_logs & "\Installeur_log.log" ; Création du nom du log
+Global $fichier_log = $dossier_logs & "\"& _NowDate &"-Installeur_log.log" ; Création du nom du log
 #Region Declaration des fonctions
 
 func existe($chemin,$lb,$chk)
@@ -106,14 +106,6 @@ Func etat() ; Vérifier existance d'un dossier
 EndFunc
 
 
-Func test($val,$msg)
-   if $val = 0 Then
-	  _FileWriteLog($fichier_log, "ERREUR : "& $msg)
-   else
-	  _FileWriteLog($fichier_log, "Réussi : "& $msg)
-   EndIf
-EndFunc
-
 Func install($fenetre,$chemin)
    _FileWriteLog($fichier_log, "-------- Début installation : " & $fenetre)									; On trace le début de l'install
    $Pid = ShellExecute($chemin) 														; Lancement de le soft
@@ -131,10 +123,10 @@ Func install($fenetre,$chemin)
 		 $Pid = ControlFocus($fenetre, "&Suivant >", "&Suivant >")
 		 if $Pid = 0 Then
 			$Pid = ControlFocus($fenetre, "&Installer", "&Installer>")
-			test($Pid, " : On a pas réussi à prendre le focus :" & $fenetre)
+			test($fichier_log,$Pid, " : On a pas réussi à prendre le focus :" & $fenetre)
 		 EndIf
 		 $focus = ControlGetFocus($fenetre) 											; ON RECUPERE L'ID DU FOCUS
-		 $texte = ControlGetText($fenetre,"", $focus)									; ON RECUPERE LE TEXTE DU BOUTON AYANT LE FOCUS
+		 $texte = ControlGetText($fenetre, "", $focus)									; ON RECUPERE LE TEXTE DU BOUTON AYANT LE FOCUS
 		 if StringInStr($texte, "Précédent", 2) = 1 then
 			Send("{TAB}")
 			Send("{ENTER}")
@@ -156,30 +148,30 @@ EndFunc
 	#Region creation des dossiers
 	 _FileWriteLog($fichier_log, "-------- Début création des dossiers")
 	$Pid = 0
-	$Pid = DirCreate($dossier_trilog)	- test($Pid, $dossier_trilog)
-	$Pid = DirCreate($dossier_temp) 	- test($Pid, $dossier_temp)
-	$Pid = DirCreate($dossier_softs) 	- test($Pid, $dossier_softs)
-	$Pid = DirCreate($dossier_scripts)	- test($Pid, $dossier_scripts)
+	$Pid = DirCreate($dossier_trilog)	- test($fichier_log, $Pid, $dossier_trilog)
+	$Pid = DirCreate($dossier_temp) 	- test($fichier_log, $Pid, $dossier_temp)
+	$Pid = DirCreate($dossier_softs) 	- test($fichier_log, $Pid, $dossier_softs)
+	$Pid = DirCreate($dossier_scripts)	- test($fichier_log, $Pid, $dossier_scripts)
 	#EndRegion
 
 	#Region Compilation dechargement des dossiers
-	$Pid = FileInstall(".\soft\galss-3.43.04-x64.msi", 			$dossier_softs & "\galss-3.43.04-x64.msi") 		- test($Pid, "Transfert de la galss x64")
-	$Pid = FileInstall(".\soft\CryptolibCPS-5.0.42_x64.msi",	$dossier_softs & "\CryptolibCPS-5.0.42_x64.msi")- test($Pid, "Transfert de la crypto x64")
-	$Pid = FileInstall(".\soft\fsv-1.40.1008-Signe.msi", 		$dossier_softs & "\fsv-1.40.1008-Signe.msi") 	- test($Pid, "Transfert de la fsv-1.40.1008")
-	$Pid = FileInstall(".\soft\fsv-1.40.1104-Signe.msi", 		$dossier_softs & "\fsv-1.40.1104-Signe.msi") 	- test($Pid, "Transfert de la fsv-1.40.1104")
-	$Pid = FileInstall(".\soft\fsv-1.40.1202-Signe.msi", 		$dossier_softs & "\fsv-1.40.1202-Signe.msi") 	- test($Pid, "Transfert de la fsv-1.40.1202")
-	$Pid = FileInstall(".\soft\VitalZen.exe", 					$dossier_softs & "\VitalZen.exe") 				- test($Pid, "Transfert de VitalZen")
-	$Pid = FileInstall(".\soft\icone weda.ico",					$dossier_softs & "\icone weda.ico") 			- test($Pid, "Transfert de icone.ico")
-	$Pid = FileInstall(".\soft\newpyx.zip", 					$dossier_softs & "\newpyx.zip")					- test($Pid, "Transfert de newpyx.zip")
-	$Pid = FileInstall(".\soft\services_VZ97.zip", 				$dossier_softs & "\services_VZ97.zip") 			- test($Pid, "Transfert de services_97")
-	$Pid = FileInstall(".\soft\RVZN_Restart.exe", 				$dossier_softs & "\RVZN_Restart.exe") 			- test($Pid, "Transfert de RVZN_Restart.exe")
-	$Pid = FileInstall(".\soft\mica-2.13.03.00.msi", 			$dossier_softs & "\mica-2.13.03.00.msi") 		- test($Pid, "Transfert de mica-2.13.03.00.msi")
-	$Pid = FileInstall(".\soft\srvsvcnam-3.21.04.msi", 			$dossier_softs & "\srvsvcnam-3.21.04.msi") 		- test($Pid, "Transfert de srvsvcnam-3.21.04.msi")
-	$Pid = FileInstall(".\scripts\delete_srv.bat", 				$dossier_scripts & "\delete_srv.bat") 			- test($Pid, "Transfert de delete_srv.bat")
-	$Pid = FileInstall(".\scripts\droits.bat", 					$dossier_scripts & "\droits.bat") 				- test($Pid, "Transfert de droits.bat")
-	$Pid = FileInstall(".\scripts\droits.ps1", 					$dossier_scripts & "\droits.ps1") 				- test($Pid, "Transfert de droits.ps1")
+	$Pid = FileInstall(".\soft\galss-3.43.04-x64.msi", 			$dossier_softs & "\galss-3.43.04-x64.msi") 		- test($fichier_log,$Pid, "Transfert de la galss x64")
+	$Pid = FileInstall(".\soft\CryptolibCPS-5.0.42_x64.msi",	$dossier_softs & "\CryptolibCPS-5.0.42_x64.msi")- test($fichier_log,$Pid, "Transfert de la crypto x64")
+	$Pid = FileInstall(".\soft\fsv-1.40.1011-Signe.msi", 		$dossier_softs & "\fsv-1.40.1011-Signe.msi") 	- test($fichier_log,$Pid, "Transfert de la fsv-1.40.1011")
+	$Pid = FileInstall(".\soft\fsv-1.40.1104-Signe.msi", 		$dossier_softs & "\fsv-1.40.1104-Signe.msi") 	- test($fichier_log,$Pid, "Transfert de la fsv-1.40.1104")
+	$Pid = FileInstall(".\soft\fsv-1.40.1202-Signe.msi", 		$dossier_softs & "\fsv-1.40.1202-Signe.msi") 	- test($fichier_log,$Pid, "Transfert de la fsv-1.40.1202")
+	$Pid = FileInstall(".\soft\VitalZen.exe", 					$dossier_softs & "\VitalZen.exe") 				- test($fichier_log,$Pid, "Transfert de VitalZen")
+	$Pid = FileInstall(".\soft\icone weda.ico",					$dossier_softs & "\icone weda.ico") 			- test($fichier_log,$Pid, "Transfert de icone.ico")
+	$Pid = FileInstall(".\soft\newpyx.zip", 					$dossier_softs & "\newpyx.zip")					- test($fichier_log,$Pid, "Transfert de newpyx.zip")
+	$Pid = FileInstall(".\soft\services_VZ97.zip", 				$dossier_softs & "\services_VZ97.zip") 			- test($fichier_log,$Pid, "Transfert de services_97")
+	$Pid = FileInstall(".\soft\RVZN_Restart.exe", 				$dossier_softs & "\RVZN_Restart.exe") 			- test($fichier_log,$Pid, "Transfert de RVZN_Restart.exe")
+	$Pid = FileInstall(".\soft\mica-2.13.03.00.msi", 			$dossier_softs & "\mica-2.13.03.00.msi") 		- test($fichier_log,$Pid, "Transfert de mica-2.13.03.00.msi")
+	$Pid = FileInstall(".\soft\srvsvcnam-3.21.04.msi", 			$dossier_softs & "\srvsvcnam-3.21.04.msi") 		- test($fichier_log,$Pid, "Transfert de srvsvcnam-3.21.04.msi")
+	$Pid = FileInstall(".\scripts\delete_srv.bat", 				$dossier_scripts & "\delete_srv.bat") 			- test($fichier_log,$Pid, "Transfert de delete_srv.bat")
+	$Pid = FileInstall(".\scripts\droits.bat", 					$dossier_scripts & "\droits.bat") 				- test($fichier_log,$Pid, "Transfert de droits.bat")
+	$Pid = FileInstall(".\scripts\droits.ps1", 					$dossier_scripts & "\droits.ps1") 				- test($fichier_log,$Pid, "Transfert de droits.ps1")
 
-	$Pid = FileCreateShortcut($dossier_softs & "\RVZN_Restart.exe",@DesktopDir)  -	test($Pid, "Création du raccourci RVZN")
+	$Pid = FileCreateShortcut($dossier_softs & "\RVZN_Restart.exe",@DesktopDir)  -	test($fichier_log,$Pid, "Création du raccourci RVZN")
 	#EndRegion
 
 While 1
@@ -201,7 +193,7 @@ While 1
 			$timerDebut = TimerInit() 														; On lance le Kikimètre pour voir le temps que l'on prend pas à faire l'installation
 
 		#Region Installation des composants
-		If GUICtrlRead($chk_droits) 	= $GUI_CHECKED Then $Pid = ShellExecute($dossier_scripts &"\droits.bat") - test($Pid,"Ajout des droits")
+		If GUICtrlRead($chk_droits) 	= $GUI_CHECKED Then $Pid = ShellExecute($dossier_scripts &"\droits.bat") - test($fichier_log,$Pid,"Ajout des droits")
 		If GUICtrlRead($chk_fsv10) 		= $GUI_CHECKED Then install("FSV 1.40.1008 - Assistant d'installation", $dossier_softs & "\fsv-1.40.1008-Signe.msi")				; INSTALLATION DE LA FSV 1.40.10
 		If GUICtrlRead($chk_fsv11) 		= $GUI_CHECKED Then install("FSV 1.40.1104 - Assistant d'installation", $dossier_softs & "\fsv-1.40.1104-Signe.msi")				; INSTALLATION DE LA FSV 1.40.11
 		If GUICtrlRead($chk_fsv12) 		= $GUI_CHECKED Then install("FSV 1.40.1202 - Assistant d'installation", $dossier_softs & "\fsv-1.40.1202-Signe.msi")				; INSTALLATION DE LA FSV 1.40.12
@@ -228,7 +220,7 @@ While 1
 		if @error Then
 			_FileWriteLog($fichier_log, "le raccourci n'existe pas")
 			$Pid = FileCreateShortcut(@HomeDrive & "\Program Files (x86)\Google\Chrome\Application\chrome.exe", @DesktopDir & "\weda", "", " --allow-running-insecure-content --disable-background-mode https://secure.weda.fr", "", $dossier_softs & "\icone weda.ico")
-			test($Pid, "Création raccourci Weda")
+			test($fichier_log,$Pid, "Création raccourci Weda")
 		EndIf
 
 		$timerFin = TimerDiff($timerDebut) 																		; ON RÉCUPÈRE LE TEMPS ENTRE LE DÉBUT DE L'INSTALL ET LA FIN
@@ -256,7 +248,7 @@ While 1
 
 			; On supprime le service
 			$Pid = Run(@HomeDrive & "\trilog\scripts\delete_srv.bat")
-			test($Pid, "Suppression du Service")
+			test($fichier_log,$Pid, "Suppression du Service")
 		EndIf
 
 		; Installation en réseau partie serveur
@@ -264,19 +256,19 @@ While 1
 			#Region Création des dossiers pour le poste serveur
 			; On crée les dossier mis en réseau
 			$Pid = DirCreate(@HomeDrive & "\VZLan\IVZ")
-			test($Pid,@HomeDrive & "\VZLan\IVZ")
+			test($fichier_log,$Pid,@HomeDrive & "\VZLan\IVZ")
 			$Pid = DirCreate(@HomeDrive & "\VZLan\ARL")
-			test($Pid,@HomeDrive & "\VZLan\ARL")
+			test($fichier_log,$Pid,@HomeDrive & "\VZLan\ARL")
 			$Pid = DirCreate(@HomeDrive & "\VZLan\B2")
-			test($Pid,@HomeDrive & "\VZLan\B2")
+			test($fichier_log,$Pid,@HomeDrive & "\VZLan\B2")
 			$Pid = DirCreate(@HomeDrive & "\VZLan\FSE")
-			test($Pid,@HomeDrive & "\VZLan\FSE")
+			test($fichier_log,$Pid,@HomeDrive & "\VZLan\FSE")
 			$Pid = DirCreate(@HomeDrive & "\VZLan\LOTS")
-			test($Pid,@HomeDrive & "\VZLan\LOTS")
+			test($fichier_log,$Pid,@HomeDrive & "\VZLan\LOTS")
 			$Pid = DirCreate(@HomeDrive & "\VZLan\Facture")
-			test($Pid,@HomeDrive & "\VZLan\Facture")
+			test($fichier_log,$Pid,@HomeDrive & "\VZLan\Facture")
 			$Pid = DirCreate(@HomeDrive & "\VZLan\CV")
-			test($Pid,@HomeDrive & "\VZLan\CV")
+			test($fichier_log,$Pid,@HomeDrive & "\VZLan\CV")
 			#EndRegion
 
 			; On modifie le fichier pyxvital.ini
@@ -304,7 +296,7 @@ While 1
 		$Pid = _7ZIPExtract(0, $dossier_softs & "\services_VZ97.zip", $dossier_vitalzen)
 		_FileWriteLog($fichier_log, "Décompression de VZ97")
 		$Pid = FileExists($dossier_vitalzen & "\test.txt")
-		test($Pid, "Update réussi VZ 97")
+		test($fichier_log,$Pid, "Update réussi VZ 97")
 
 
 
